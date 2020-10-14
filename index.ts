@@ -8,8 +8,8 @@ enum Tile {
   FLUX,
   UNBREAKABLE,
   PLAYER,
-  STONE, FALLING_STONE,
-  BOX, FALLING_BOX,
+  STONE,
+  BOX,
   KEY1, LOCK1,
   KEY2, LOCK2
 }
@@ -32,9 +32,7 @@ const TILE_COLOR = {
   [Tile.UNBREAKABLE]: '#999',
   [Tile.PLAYER]: '#ff0000',
   [Tile.STONE]: '#0000cc',
-  [Tile.FALLING_STONE]: '#0000cc',
   [Tile.BOX]: '#8b4513',
-  [Tile.FALLING_BOX]: '#8b4513',
   [Tile.KEY1]: '#ffcc00',
   [Tile.LOCK1]: '#ffcc00',
   [Tile.KEY2]: '#00ccff',
@@ -46,9 +44,9 @@ let playery = 1;
 let map: Tile[][] = [
   [2, 2, 2, 2, 2, 2, 2, 2],
   [2, 3, 0, 1, 1, 2, 0, 2],
-  [2, 4, 2, 6, 1, 2, 0, 2],
-  [2, 8, 4, 1, 1, 2, 0, 2],
-  [2, 4, 1, 1, 1, 9, 0, 2],
+  [2, 4, 2, 5, 1, 2, 0, 2],
+  [2, 6, 4, 1, 1, 2, 0, 2],
+  [2, 4, 1, 1, 1, 7, 0, 2],
   [2, 2, 2, 2, 2, 2, 2, 2],
 ];
 
@@ -118,18 +116,14 @@ function update() {
 
   for (let y = map.length - 1; y >= 0; y--) {
     for (let x = 0; x < map[y].length; x++) {
-      if ((map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
+      if ((map[y][x] === Tile.STONE)
         && map[y + 1][x] === Tile.AIR) {
-        map[y + 1][x] = Tile.FALLING_STONE;
+        map[y + 1][x] = Tile.STONE;
         map[y][x] = Tile.AIR;
-      } else if ((map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
+      } else if ((map[y][x] === Tile.BOX)
         && map[y + 1][x] === Tile.AIR) {
-        map[y + 1][x] = Tile.FALLING_BOX;
+        map[y + 1][x] = Tile.BOX;
         map[y][x] = Tile.AIR;
-      } else if (map[y][x] === Tile.FALLING_STONE) {
-        map[y][x] = Tile.STONE;
-      } else if (map[y][x] === Tile.FALLING_BOX) {
-        map[y][x] = Tile.BOX;
       }
     }
   }
