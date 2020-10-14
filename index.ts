@@ -16,9 +16,14 @@ enum Tile {
 
 enum Input {
   LEFT = 'ArrowLeft',
-  UP = 'ArrowUp',
-  RIGHT = 'ArrowRight',
   DOWN = 'ArrowDown',
+  RIGHT = 'ArrowRight',
+  UP = 'ArrowUp',
+
+  A = 'a',
+  S = 's',
+  D = 'd',
+  W = 'w',
 }
 
 let playerx = 1;
@@ -162,9 +167,8 @@ window.onload = () => {
 }
 
 window.addEventListener("keydown", e => {
-  if (e.key === Input.LEFT || e.key === "a") inputs.push(Input.LEFT);
-  else if (e.key === Input.UP || e.key === "w") inputs.push(Input.UP);
-  else if (e.key === Input.RIGHT || e.key === "d") inputs.push(Input.RIGHT);
-  else if (e.key === Input.DOWN || e.key === "s") inputs.push(Input.DOWN);
+  if (e.key === Input.LEFT || e.key === Input.A) inputs.push(Input.LEFT);
+  else if (e.key === Input.UP || e.key === Input.W) inputs.push(Input.UP);
+  else if (e.key === Input.RIGHT || e.key === Input.D) inputs.push(Input.RIGHT);
+  else if (e.key === Input.DOWN || e.key === Input.S) inputs.push(Input.DOWN);
 });
-
