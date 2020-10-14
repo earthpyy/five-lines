@@ -26,6 +26,21 @@ enum Input {
   W = 'w',
 }
 
+const TILE_COLOR = {
+  [Tile.AIR]: '#fff',
+  [Tile.FLUX]: '#ccffcc',
+  [Tile.UNBREAKABLE]: '#999',
+  [Tile.PLAYER]: '#ff0000',
+  [Tile.STONE]: '#0000cc',
+  [Tile.FALLING_STONE]: '#0000cc',
+  [Tile.BOX]: '#8b4513',
+  [Tile.FALLING_BOX]: '#8b4513',
+  [Tile.KEY1]: '#ffcc00',
+  [Tile.LOCK1]: '#ffcc00',
+  [Tile.KEY2]: '#00ccff',
+  [Tile.LOCK2]: '#00ccff',
+}
+
 let playerx = 1;
 let playery = 1;
 let map: Tile[][] = [
@@ -127,29 +142,13 @@ function draw() {
   g.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw map
-  for (let y = 0; y < map.length; y++) {
-    for (let x = 0; x < map[y].length; x++) {
-      if (map[y][x] === Tile.FLUX)
-        g.fillStyle = '#ccffcc';
-      else if (map[y][x] === Tile.UNBREAKABLE)
-        g.fillStyle = '#999999';
-      else if (map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
-        g.fillStyle = '#0000cc';
-      else if (map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
-        g.fillStyle = '#8b4513';
-      else if (map[y][x] === Tile.KEY1 || map[y][x] === Tile.LOCK1)
-        g.fillStyle = '#ffcc00';
-      else if (map[y][x] === Tile.KEY2 || map[y][x] === Tile.LOCK2)
-        g.fillStyle = '#00ccff';
-
-      if (map[y][x] !== Tile.AIR)
-        g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-    }
-  }
-
-  // Draw player
-  g.fillStyle = '#ff0000';
-  g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  map.forEach((col, y) => {
+    col.forEach((row, x) => {
+      const color = TILE_COLOR[row];
+      g.fillStyle = color;
+      g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    });
+  });
 }
 
 function gameLoop() {
