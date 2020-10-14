@@ -121,8 +121,8 @@ function update() {
 }
 
 function draw() {
-  let canvas = document.getElementById("GameCanvas") as HTMLCanvasElement;
-  let g = canvas.getContext("2d");
+  let canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
+  let g = canvas.getContext('2d');
 
   g.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -130,17 +130,17 @@ function draw() {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
       if (map[y][x] === Tile.FLUX)
-        g.fillStyle = "#ccffcc";
+        g.fillStyle = '#ccffcc';
       else if (map[y][x] === Tile.UNBREAKABLE)
-        g.fillStyle = "#999999";
+        g.fillStyle = '#999999';
       else if (map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
-        g.fillStyle = "#0000cc";
+        g.fillStyle = '#0000cc';
       else if (map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
-        g.fillStyle = "#8b4513";
+        g.fillStyle = '#8b4513';
       else if (map[y][x] === Tile.KEY1 || map[y][x] === Tile.LOCK1)
-        g.fillStyle = "#ffcc00";
+        g.fillStyle = '#ffcc00';
       else if (map[y][x] === Tile.KEY2 || map[y][x] === Tile.LOCK2)
-        g.fillStyle = "#00ccff";
+        g.fillStyle = '#00ccff';
 
       if (map[y][x] !== Tile.AIR)
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -148,7 +148,7 @@ function draw() {
   }
 
   // Draw player
-  g.fillStyle = "#ff0000";
+  g.fillStyle = '#ff0000';
   g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 }
 
@@ -166,7 +166,7 @@ window.onload = () => {
   gameLoop();
 }
 
-window.addEventListener("keydown", e => {
+window.addEventListener('keydown', e => {
   if (e.key === Input.LEFT || e.key === Input.A) inputs.push(Input.LEFT);
   else if (e.key === Input.UP || e.key === Input.W) inputs.push(Input.UP);
   else if (e.key === Input.RIGHT || e.key === Input.D) inputs.push(Input.RIGHT);
