@@ -15,7 +15,10 @@ enum Tile {
 }
 
 enum Input {
-  UP, DOWN, LEFT, RIGHT
+  LEFT = 'ArrowLeft',
+  UP = 'ArrowUp',
+  RIGHT = 'ArrowRight',
+  DOWN = 'ArrowDown',
 }
 
 let playerx = 1;
@@ -158,14 +161,10 @@ window.onload = () => {
   gameLoop();
 }
 
-const LEFT_KEY = 37;
-const UP_KEY = 38;
-const RIGHT_KEY = 39;
-const DOWN_KEY = 40;
 window.addEventListener("keydown", e => {
-  if (e.keyCode === LEFT_KEY || e.key === "a") inputs.push(Input.LEFT);
-  else if (e.keyCode === UP_KEY || e.key === "w") inputs.push(Input.UP);
-  else if (e.keyCode === RIGHT_KEY || e.key === "d") inputs.push(Input.RIGHT);
-  else if (e.keyCode === DOWN_KEY || e.key === "s") inputs.push(Input.DOWN);
+  if (e.key === Input.LEFT || e.key === "a") inputs.push(Input.LEFT);
+  else if (e.key === Input.UP || e.key === "w") inputs.push(Input.UP);
+  else if (e.key === Input.RIGHT || e.key === "d") inputs.push(Input.RIGHT);
+  else if (e.key === Input.DOWN || e.key === "s") inputs.push(Input.DOWN);
 });
 
