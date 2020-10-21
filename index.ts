@@ -10,8 +10,8 @@ enum Tile {
   PLAYER,
   STONE,
   BOX,
-  KEY1, LOCK1,
-  KEY2, LOCK2
+  KEY,
+  LOCK,
 }
 
 enum Input {
@@ -40,10 +40,8 @@ const TILE_COLOR = {
   [Tile.PLAYER]: '#ff0000',
   [Tile.STONE]: '#0000cc',
   [Tile.BOX]: '#8b4513',
-  [Tile.KEY1]: '#ffcc00',
-  [Tile.LOCK1]: '#ffcc00',
-  [Tile.KEY2]: '#00ccff',
-  [Tile.LOCK2]: '#00ccff',
+  [Tile.KEY]: '#ffcc00',
+  [Tile.LOCK]: '#ffcc00',
 }
 
 const FALLABLE: Tile[] = [
@@ -57,8 +55,8 @@ let map: Tile[][] = [
   [Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK],
   [Tile.UNBREAK, Tile.PLAYER, Tile.AIR, Tile.FLUX, Tile.FLUX, Tile.UNBREAK, Tile.AIR, Tile.UNBREAK],
   [Tile.UNBREAK, Tile.STONE, Tile.UNBREAK, Tile.BOX, Tile.FLUX, Tile.UNBREAK, Tile.AIR, Tile.UNBREAK],
-  [Tile.UNBREAK, Tile.KEY1, Tile.STONE, Tile.FLUX, Tile.FLUX, Tile.UNBREAK, Tile.AIR, Tile.UNBREAK],
-  [Tile.UNBREAK, Tile.STONE, Tile.FLUX, Tile.FLUX, Tile.FLUX, Tile.LOCK1, Tile.AIR, Tile.UNBREAK],
+  [Tile.UNBREAK, Tile.KEY, Tile.STONE, Tile.FLUX, Tile.FLUX, Tile.UNBREAK, Tile.AIR, Tile.UNBREAK],
+  [Tile.UNBREAK, Tile.STONE, Tile.FLUX, Tile.FLUX, Tile.FLUX, Tile.LOCK, Tile.AIR, Tile.UNBREAK],
   [Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK],
 ];
 
@@ -85,11 +83,8 @@ function move(x: number, y: number) {
   if (map[y][x] === Tile.FLUX
     || map[y][x] === Tile.AIR) {
     moveToTile(x, y);
-  } else if (map[y][x] === Tile.KEY1) {
-    remove(Tile.LOCK1);
-    moveToTile(x, y);
-  } else if (map[y][x] === Tile.KEY2) {
-    remove(Tile.LOCK2);
+  } else if (map[y][x] === Tile.KEY) {
+    remove(Tile.LOCK);
     moveToTile(x, y);
   }
 }
