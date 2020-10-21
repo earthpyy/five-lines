@@ -39,6 +39,11 @@ const TILE_COLOR = {
   [Tile.LOCK2]: '#00ccff',
 }
 
+const FALLABLE: Tile[] = [
+  Tile.BOX,
+  Tile.STONE,
+]
+
 let playerx = 1;
 let playery = 1;
 let map: Tile[][] = [
@@ -53,13 +58,13 @@ let map: Tile[][] = [
 let inputs: Input[] = [];
 
 function remove(tile: Tile) {
-  for (let y = 0; y < map.length; y++) {
-    for (let x = 0; x < map[y].length; x++) {
-      if (map[y][x] === tile) {
-        map[y][x] = Tile.AIR;
+  map.forEach(column => {
+    column.forEach((row, index) => {
+      if (row === tile) {
+        column[index] = Tile.AIR;
       }
-    }
-  }
+    });
+  });
 }
 
 function moveToTile(newx: number, newy: number) {
@@ -69,36 +74,33 @@ function moveToTile(newx: number, newy: number) {
   playery = newy;
 }
 
+function move(x: number, y: number) {
+  if (map[y][x] === Tile.FLUX
+    || map[y][x] === Tile.AIR) {
+    moveToTile(x, y);
+  } else if (map[y][x] === Tile.KEY1) {
+    remove(Tile.LOCK1);
+    moveToTile(x, y);
+  } else if (map[y][x] === Tile.KEY2) {
+    remove(Tile.LOCK2);
+    moveToTile(x, y);
+  }
+}
+
 function moveHorizontal(dx: number) {
-  if (map[playery][playerx + dx] === Tile.FLUX
-    || map[playery][playerx + dx] === Tile.AIR) {
-    moveToTile(playerx + dx, playery);
-  } else if ((map[playery][playerx + dx] === Tile.STONE
+  move(playerx + dx, playery);
+
+  if ((map[playery][playerx + dx] === Tile.STONE
     || map[playery][playerx + dx] === Tile.BOX)
     && map[playery][playerx + dx + dx] === Tile.AIR
     && map[playery + 1][playerx + dx] !== Tile.AIR) {
     map[playery][playerx + dx + dx] = map[playery][playerx + dx];
     moveToTile(playerx + dx, playery);
-  } else if (map[playery][playerx + dx] === Tile.KEY1) {
-    remove(Tile.LOCK1);
-    moveToTile(playerx + dx, playery);
-  } else if (map[playery][playerx + dx] === Tile.KEY2) {
-    remove(Tile.LOCK2);
-    moveToTile(playerx + dx, playery);
   }
 }
 
 function moveVertical(dy: number) {
-  if (map[playery + dy][playerx] === Tile.FLUX
-    || map[playery + dy][playerx] === Tile.AIR) {
-    moveToTile(playerx, playery + dy);
-  } else if (map[playery + dy][playerx] === Tile.KEY1) {
-    remove(Tile.LOCK1);
-    moveToTile(playerx, playery + dy);
-  } else if (map[playery + dy][playerx] === Tile.KEY2) {
-    remove(Tile.LOCK2);
-    moveToTile(playerx, playery + dy);
-  }
+  move(playerx, playery + dy);
 }
 
 function update() {
@@ -114,15 +116,11 @@ function update() {
       moveVertical(1);
   }
 
+  // check for fallable
   for (let y = map.length - 1; y >= 0; y--) {
     for (let x = 0; x < map[y].length; x++) {
-      if ((map[y][x] === Tile.STONE)
-        && map[y + 1][x] === Tile.AIR) {
-        map[y + 1][x] = Tile.STONE;
-        map[y][x] = Tile.AIR;
-      } else if ((map[y][x] === Tile.BOX)
-        && map[y + 1][x] === Tile.AIR) {
-        map[y + 1][x] = Tile.BOX;
+      if (FALLABLE.indexOf(map[y][x]) !== -1 && map[y + 1][x] === Tile.AIR) {
+        map[y + 1][x] = map[y][x];
         map[y][x] = Tile.AIR;
       }
     }
@@ -150,9 +148,7 @@ function gameLoop() {
   update();
   draw();
   let after = Date.now();
-  let frameTime = after - before;
-  let sleep = SLEEP - frameTime;
-  setTimeout(gameLoop, sleep);
+  setTimeout(gameLoop, SLEEP - (after - before));
 }
 
 window.onload = () => {
