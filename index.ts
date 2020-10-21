@@ -6,7 +6,7 @@ const SLEEP = 1000 / FPS;
 enum Tile {
   AIR,
   FLUX,
-  UNBREAKABLE,
+  UNBREAK,
   PLAYER,
   STONE,
   BOX,
@@ -26,10 +26,17 @@ enum Input {
   W = 'w',
 }
 
+const INPUT_FUNC = {
+  [Input.LEFT]: () => moveHorizontal(-1),
+  [Input.DOWN]: () => moveVertical(1),
+  [Input.RIGHT]: () => moveHorizontal(1),
+  [Input.UP]: () => moveVertical(-1),
+}
+
 const TILE_COLOR = {
   [Tile.AIR]: '#fff',
   [Tile.FLUX]: '#ccffcc',
-  [Tile.UNBREAKABLE]: '#999',
+  [Tile.UNBREAK]: '#999',
   [Tile.PLAYER]: '#ff0000',
   [Tile.STONE]: '#0000cc',
   [Tile.BOX]: '#8b4513',
@@ -47,12 +54,12 @@ const FALLABLE: Tile[] = [
 let playerx = 1;
 let playery = 1;
 let map: Tile[][] = [
-  [2, 2, 2, 2, 2, 2, 2, 2],
-  [2, 3, 0, 1, 1, 2, 0, 2],
-  [2, 4, 2, 5, 1, 2, 0, 2],
-  [2, 6, 4, 1, 1, 2, 0, 2],
-  [2, 4, 1, 1, 1, 7, 0, 2],
-  [2, 2, 2, 2, 2, 2, 2, 2],
+  [Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK],
+  [Tile.UNBREAK, Tile.PLAYER, Tile.AIR, Tile.FLUX, Tile.FLUX, Tile.UNBREAK, Tile.AIR, Tile.UNBREAK],
+  [Tile.UNBREAK, Tile.STONE, Tile.UNBREAK, Tile.BOX, Tile.FLUX, Tile.UNBREAK, Tile.AIR, Tile.UNBREAK],
+  [Tile.UNBREAK, Tile.KEY1, Tile.STONE, Tile.FLUX, Tile.FLUX, Tile.UNBREAK, Tile.AIR, Tile.UNBREAK],
+  [Tile.UNBREAK, Tile.STONE, Tile.FLUX, Tile.FLUX, Tile.FLUX, Tile.LOCK1, Tile.AIR, Tile.UNBREAK],
+  [Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK, Tile.UNBREAK],
 ];
 
 let inputs: Input[] = [];
@@ -90,8 +97,7 @@ function move(x: number, y: number) {
 function moveHorizontal(dx: number) {
   move(playerx + dx, playery);
 
-  if ((map[playery][playerx + dx] === Tile.STONE
-    || map[playery][playerx + dx] === Tile.BOX)
+  if (FALLABLE.indexOf(map[playery][playerx + dx]) !== -1
     && map[playery][playerx + dx + dx] === Tile.AIR
     && map[playery + 1][playerx + dx] !== Tile.AIR) {
     map[playery][playerx + dx + dx] = map[playery][playerx + dx];
@@ -103,20 +109,7 @@ function moveVertical(dy: number) {
   move(playerx, playery + dy);
 }
 
-function update() {
-  while (inputs.length > 0) {
-    let current = inputs.pop();
-    if (current === Input.LEFT)
-      moveHorizontal(-1);
-    else if (current === Input.RIGHT)
-      moveHorizontal(1);
-    else if (current === Input.UP)
-      moveVertical(-1);
-    else if (current === Input.DOWN)
-      moveVertical(1);
-  }
-
-  // check for fallable
+function checkFallable() {
   for (let y = map.length - 1; y >= 0; y--) {
     for (let x = 0; x < map[y].length; x++) {
       if (FALLABLE.indexOf(map[y][x]) !== -1 && map[y + 1][x] === Tile.AIR) {
@@ -127,26 +120,44 @@ function update() {
   }
 }
 
-function draw() {
-  let canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
-  let g = canvas.getContext('2d');
+function update() {
+  while (inputs.length > 0) {
+    const current = inputs.pop();
+    const func = INPUT_FUNC[current];
+    func();
+  }
+}
 
-  g.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Draw map
+function drawMap(g: CanvasRenderingContext2D) {
   map.forEach((col, y) => {
     col.forEach((row, x) => {
-      const color = TILE_COLOR[row];
-      g.fillStyle = color;
+      g.fillStyle = TILE_COLOR[row];
       g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     });
   });
 }
 
+function clearMap(canvas: HTMLCanvasElement, g: CanvasRenderingContext2D) {
+  g.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function draw() {
+  let canvas = document.getElementById('GameCanvas') as HTMLCanvasElement;
+  let g = canvas.getContext('2d');
+
+  clearMap(canvas, g);
+  drawMap(g);
+}
+
+function updateGame() {
+  update();
+  checkFallable();
+  draw();
+}
+
 function gameLoop() {
   let before = Date.now();
-  update();
-  draw();
+  updateGame();
   let after = Date.now();
   setTimeout(gameLoop, SLEEP - (after - before));
 }
