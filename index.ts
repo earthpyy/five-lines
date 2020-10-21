@@ -31,7 +31,7 @@ const INPUT_FUNC = {
   [Input.DOWN]: () => moveVertical(1),
   [Input.RIGHT]: () => moveHorizontal(1),
   [Input.UP]: () => moveVertical(-1),
-}
+};
 
 const TILE_COLOR = {
   [Tile.AIR]: '#fff',
@@ -42,12 +42,17 @@ const TILE_COLOR = {
   [Tile.BOX]: '#8b4513',
   [Tile.KEY]: '#ffcc00',
   [Tile.LOCK]: '#ffcc00',
-}
+};
 
 const FALLABLE: Tile[] = [
   Tile.BOX,
   Tile.STONE,
-]
+];
+
+const WALKABLE: Tile[] = [
+  Tile.FLUX,
+  Tile.AIR,
+];
 
 let playerx = 1;
 let playery = 1;
@@ -80,8 +85,7 @@ function moveToTile(newx: number, newy: number) {
 }
 
 function move(x: number, y: number) {
-  if (map[y][x] === Tile.FLUX
-    || map[y][x] === Tile.AIR) {
+  if (WALKABLE.indexOf(map[y][x]) !== -1) {
     moveToTile(x, y);
   } else if (map[y][x] === Tile.KEY) {
     remove(Tile.LOCK);
